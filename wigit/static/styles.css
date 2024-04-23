@@ -1,0 +1,24 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    max-width: 2560px;
+    color: #00ff2b;
+}
+
+body{
+    background-color: black;
+}
+main{
+    margin: 400px auto;
+    max-width: 960px;
+    border: 2px solid #36ba01; 
+    box-shadow: 0px 0px 20px 15px #00ff2b;
+    height: 200px;
+    border-radius: 10px;
+}
+.time{
+    font-size: 150px;
+    font-family: "Silkscreen", sans-serif;
+    text-align: center;
+}
