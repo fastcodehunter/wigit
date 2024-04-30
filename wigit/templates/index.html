@@ -1,42 +1,84 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="{% static "styles.css" %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Acme&family=Anta&family=Comfortaa:wght@300..700&family=Gloria+Hallelujah&family=Jacquard+24&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Silkscreen:wght@400;700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,0,0" />
+<link rel="Weather" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,0,0" />
 </head>
 <body>
     <main>
         <div class="container">
             <div class="wrapper">
                 <div class="container__city">
-                    <div class="icon__city">
-                        <img  src="./icon-city.png" alt="">City
-                        <img src="/e7c22995997375.5ea4592e022af.png" alt="">
-                    </div>
+                    <div id='city'></div>
                 </div>
                 <div class="container__temp">
-                    Celsius - 00.00
-                    <br>
-                    Fahrenheit - 00.00
+                  <div id="cels"></div>
+                  <div id="faring"></div>
                 </div>
-                 <div id='app' class="time">00-00-00</div>
+                <div id="wind"></div>
+                 <div id='time' class="time"></div>
             </div>
         </div>
+        <div>
+          <img id="weather-image" src="" alt="">
+          <div id="weather" style="text-align: center;"></div>
+        </div>
+        
     </main>
 </body>
+<script>
+  var staticMediaPath = "{% static 'media/' %}"
 
-<!-- <script>
-    let socket= new WebSocket('ws://localhost:8000/ws/some-url/')
-    socket.onmessage=function(event){
-        let data=JSON.parse(event.data)
-        console.log(data)
-        document.querySelector('#app').innerText=data.nowtime
+  let socket = new WebSocket('ws://localhost:9999/ws/some-url/')
+
+  socket.onopen = function(event) {
+    console.log('Connect');
+  };
+
+  socket.onmessage = function(event) {
+    let message = JSON.parse(event.data);
+
+    if (message.nowtime) {
+      let nowTime = message.nowtime;
+      document.getElementById('time').innerHTML = nowTime;
     }
-</script> -->
+
+    if (message.weather) {
+      let weatherData = message.weather;
+      document.getElementById('city').innerHTML = weatherData.name;
+      document.getElementById('cels').innerHTML = '℃ ' + (weatherData.main.temp - 273.15).toFixed(2)
+      document.getElementById('faring').innerHTML = '℉ ' + (weatherData.main.temp * 9/5 - 459.67).toFixed(2)
+      document.getElementById('wind').innerHTML = '༄ '+weatherData.wind.speed+' м/с'
+      document.getElementById('weather').innerHTML = weatherData.weather[0].main
+
+      let imageElement = document.getElementById('weather-image')
+
+      if (Math.floor(weatherData.weather[0].id) == 200) {
+        imageElement.src = staticMediaPath + '2.png'
+      } else if (Math.floor(weatherData.weather[0].id0) >= 300 && Math.floor(weatherData.weather[0].id) <= 500) {
+        imageElement.src = staticMediaPath + '-5.png'
+      } else if (Math.floor(weatherData.weather[0].id ) >= 600 && Math.floor(weatherData.weather[0].id ) <= 700) {
+        imageElement.src = staticMediaPath + '6-7.png'
+      } else if (Math.floor(weatherData.weather[0].id) == 800) {
+        console.log("ok")
+        imageElement.src = staticMediaPath + '8.png'
+      } else if (Math.floor(weatherData.weather[0].id) > 800) {
+        imageElement.src = staticMediaPath + '8+.png'
+
+      } else {
+        
+      }
+    }
+  }
+
+  socket.onclose = function(event) {
+    console.log('Disconnect');
+  };
+</script>
 </html>
